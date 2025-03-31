@@ -1,24 +1,23 @@
-import {Head, Link, useForm} from "@inertiajs/react";
-import AppLayout from "@/layouts/app-layout";
-import type {BreadcrumbItem} from "@/types";
+import {Head, Link, useForm} from '@inertiajs/react';
+import AppLayout from '@/layouts/app-layout';
+import type { BreadcrumbItem } from '@/types';
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {Badge} from "@/components/ui/badge";
+import {CheckCircle2, CircleX, FilePenLine, MoreHorizontal} from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel, DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {toast} from "sonner";
 
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Projects',
+        title: 'Proyectos',
         href: '/projects',
     },
 ];
@@ -30,14 +29,89 @@ type Project = {
     status: string;
     responsible: string;
     amount: number; // float
-}
+};
 
 type ProjectsProps = {
     projects: Project[];
 };
 
+function getProjectColumns({ handleDelete }: { handleDelete: (projectId: string) => void }): ColumnDef<Project>[] {
+    return  [
+        {
+            accessorKey: 'name',
+            header: 'Nombre',
+            cell: ({ row }) => <div className="capitalize">{row.getValue('name')}</div>,
+        },
+        {
+            accessorKey: 'start_date',
+            header: 'Fecha de inicio',
+            cell: ({ row }) => <div className="capitalize">{row.getValue('start_date')}</div>,
+        },
+        {
+            accessorKey: "status",
+            header: "Estado",
+            cell: ({ row }) => (
+                <Badge
+                    variant="outline"
+                    className="flex gap-1 px-1.5 text-muted-foreground [&_svg]:size-3"
+                >
+                    {row.original.status === "active" ? (
+                        <CheckCircle2 className="text-green-500" />
+                    ) : (
+                        <CircleX className="text-red-500" />
+                    )}
+                    {row.original.status}
+                </Badge>
+            ),
+        },
+        {
+            accessorKey: 'responsible',
+            header: 'Responsable',
+            cell: ({ row }) => <div className="capitalize">{row.getValue('responsible')}</div>,
+        },
+        {
+            accessorKey: 'amount',
+            header: 'Monto',
+            cell: ({ row }) => <div className="capitalize">$ {row.getValue('amount')}</div>,
+        },
+        {
+            id: "actions",
+            enableHiding: false,
+            cell: ({ row }) => {
+                const payment = row.original
+
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Abrir menu</span>
+                                <MoreHorizontal />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel className='font-bold'>
+                                Acciones
+                            </DropdownMenuLabel>
+                            <Link href={route('projects.edit', payment.id)}>
+                                <DropdownMenuItem>
+                                    Editar
+                                    <FilePenLine className="ml-auto h-4 w-4" />
+                                </DropdownMenuItem>
+                            </Link>
+                            <DropdownMenuItem onClick={() => handleDelete(payment.id)}>
+                                Eliminar
+                                <CircleX className="ml-auto h-4 w-4" />
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                )
+            },
+        },
+    ];
+}
+
 function Projects({ projects }: ProjectsProps) {
-    const { delete : destroy } = useForm();
+    const { delete: destroy } = useForm();
 
     const handleDelete = (projectId: string) => {
         destroy(route('projects.destroy', projectId), {
@@ -54,64 +128,54 @@ function Projects({ projects }: ProjectsProps) {
         });
     };
 
+    const table = useReactTable<Project>({
+        state: {},
+        data: projects,
+        columns: getProjectColumns({ handleDelete }),
+        getCoreRowModel: getCoreRowModel(),
+    });
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Projects" />
-            <div className="container mx-auto p-5">
-                <table className="min-w-full table">
-                    <thead>
-                        <tr>
-                            <th className="py-2 px-4 border-b">Name</th>
-                            <th className="py-2 px-4 border-b">Start Date</th>
-                            <th className="py-2 px-4 border-b">Status</th>
-                            <th className="py-2 px-4 border-b">Responsible</th>
-                            <th className="py-2 px-4 border-b">Amount</th>
-                            <th className="py-2 px-4 border-b">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {projects.map((project: Project) => (
-                            <tr key={project.id}>
-                                <td className="py-2 px-4 border-b">{project.name}</td>
-                                <td className="py-2 px-4 border-b">{project.start_date}</td>
-                                <td className="py-2 px-4 border-b">{project.status}</td>
-                                <td className="py-2 px-4 border-b">{project.responsible}</td>
-                                <td className="py-2 px-4 border-b">{project.amount}</td>
-                                <td className="py-2 px-4 border-b">
-                                    <Link href={route('projects.edit', project.id)}>
-                                        <Button className="mr-2">Edit</Button>
-                                    </Link>
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                            <Button variant="destructive">Delete</Button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                    This action cannot be undone. This will permanently delete the project.
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                <AlertDialogAction onClick={() => handleDelete(project.id)}>Delete</AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
-                                </td>
-                            </tr>
+            <Head title="Proyectos" />
+            <div className="mx-4 mt-4">
+                <Link href={route('projects.create')}>
+                    <Button>Crear nuevo proyecto</Button>
+                </Link>
+            </div>
+            <div className="rounded-md border m-4">
+                <Table>
+                    <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
+                                    return (
+                                        <TableHead key={header.id}>
+                                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                        </TableHead>
+                                    );
+                                })}
+                            </TableRow>
                         ))}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan={6} className="py-2 px-4 border-b">
-                                <Link href={route('projects.create')}>
-                                    <Button>Create project</Button>
-                                </Link>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
+                    </TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
+                                    No results.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
             </div>
         </AppLayout>
     );
