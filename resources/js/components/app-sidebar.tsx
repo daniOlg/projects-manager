@@ -14,7 +14,7 @@ const mainNavItems: NavItem[] = [
     //     icon: LayoutDashboard,
     // },
     {
-        title: 'Projects',
+        title: 'Proyectos',
         href: '/projects',
         icon: BriefcaseBusiness,
     },
