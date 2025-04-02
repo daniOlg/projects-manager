@@ -16,10 +16,15 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // query user by email
+
+
+         if (User::query()->where('email', '=', 'test@example.com')->doesntExist()) {
+             User::factory()->create([
+                 'name' => 'Test User',
+                 'email' => 'test@example.com',
+             ]);
+         }
 
         Project::factory(10)->create();
     }
