@@ -7,6 +7,16 @@ import {Button} from "@/components/ui/button";
 import {LoaderCircle} from "lucide-react";
 import AppLayout from "@/layouts/app-layout";
 import {toast} from "sonner";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
 
 type CreateProjectForm = {
     name: string;
@@ -47,7 +57,7 @@ function Create() {
             <div className='p-4'>
                 <form className="grid gap-6 border rounded-xl p-4" onSubmit={submit}>
                     <div className="grid gap-2">
-                        <Label htmlFor="name">Name</Label>
+                        <Label htmlFor="name">Nombre</Label>
                         <Input
                             id="name"
                             type="text"
@@ -58,13 +68,13 @@ function Create() {
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
                             disabled={processing}
-                            placeholder="Full name"
+                            placeholder="Enter project name"
                         />
                         <InputError message={errors.name} className="mt-2"/>
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="startDate">Start Date</Label>
+                        <Label htmlFor="startDate">Fecha de inicio</Label>
                         <Input
                             id="startDate"
                             type="date"
@@ -79,22 +89,24 @@ function Create() {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="status">Status</Label>
-                        <Input
-                            id="status"
-                            type="text"
-                            required
-                            tabIndex={3}
-                            autoComplete="status"
-                            value={data.status}
-                            onChange={(e) => setData('status', e.target.value)}
-                            disabled={processing}
-                        />
+                        <Label htmlFor="status">Estado</Label>
+                        <Select>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Selecciona un estado" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Selecciona un estado</SelectLabel>
+                                    <SelectItem value="active">Activo</SelectItem>
+                                    <SelectItem value="inactive">Inactivo</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                         <InputError message={errors.status} className="mt-2"/>
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="responsible">Responsible</Label>
+                        <Label htmlFor="responsible">Responsable</Label>
                         <Input
                             id="responsible"
                             type="text"
@@ -104,12 +116,13 @@ function Create() {
                             value={data.responsible}
                             onChange={(e) => setData('responsible', e.target.value)}
                             disabled={processing}
+                            placeholder="Ingresa el nombre del responsable"
                         />
                         <InputError message={errors.responsible} className="mt-2"/>
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="amount">Amount</Label>
+                        <Label htmlFor="amount">Monto</Label>
                         <Input
                             id="amount"
                             type="number"
@@ -119,6 +132,7 @@ function Create() {
                             value={data.amount}
                             onChange={(e) => setData('amount', e.target.value)}
                             disabled={processing}
+                            placeholder="Ingresa un monto"
                         />
                         <InputError message={errors.amount} className="mt-2"/>
                     </div>
