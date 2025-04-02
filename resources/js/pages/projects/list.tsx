@@ -9,11 +9,18 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel, DropdownMenuSeparator,
+    DropdownMenuLabel,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {toast} from "sonner";
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel,
+    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {useState} from "react";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -35,7 +42,11 @@ type ProjectsProps = {
     projects: Project[];
 };
 
-function getProjectColumns({ handleDelete }: { handleDelete: (projectId: string) => void }): ColumnDef<Project>[] {
+type GetProjectColumnsProps = {
+    handleDelete: (projectId: string) => void;
+}
+
+function getProjectColumns({ handleDelete }: GetProjectColumnsProps): ColumnDef<Project>[] {
     return  [
         {
             accessorKey: 'name',
@@ -78,7 +89,7 @@ function getProjectColumns({ handleDelete }: { handleDelete: (projectId: string)
             id: "actions",
             enableHiding: false,
             cell: ({ row }) => {
-                const payment = row.original
+                const project = row.original
 
                 return (
                     <DropdownMenu>
@@ -92,13 +103,13 @@ function getProjectColumns({ handleDelete }: { handleDelete: (projectId: string)
                             <DropdownMenuLabel className='font-bold'>
                                 Acciones
                             </DropdownMenuLabel>
-                            <Link href={route('projects.edit', payment.id)}>
+                            <Link href={route('projects.edit', project.id)}>
                                 <DropdownMenuItem>
                                     Editar
                                     <FilePenLine className="ml-auto h-4 w-4" />
                                 </DropdownMenuItem>
                             </Link>
-                            <DropdownMenuItem onClick={() => handleDelete(payment.id)}>
+                            <DropdownMenuItem onClick={() => handleDelete(project.id)}>
                                 Eliminar
                                 <CircleX className="ml-auto h-4 w-4" />
                             </DropdownMenuItem>
@@ -112,13 +123,21 @@ function getProjectColumns({ handleDelete }: { handleDelete: (projectId: string)
 
 function Projects({ projects }: ProjectsProps) {
     const { delete: destroy } = useForm();
+    const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+    const [projectToDelete, setProjectToDelete] = useState<{ id: string }>({ id: '' });
 
     const handleDelete = (projectId: string) => {
+        setConfirmDeleteOpen(true);
+        setProjectToDelete({ id: projectId });
+    }
+
+    const handleDestroy = (projectId: string) => {
         destroy(route('projects.destroy', projectId), {
             onSuccess: () => {
                 toast("Project deleted successfully", {
                     description: 'The project has been deleted successfully.',
                     duration: 5000,
+                    cancel: true,
                     action: {
                         label: 'Close',
                         onClick: () => toast.dismiss(),
@@ -177,6 +196,24 @@ function Projects({ projects }: ProjectsProps) {
                     </TableBody>
                 </Table>
             </div>
+            <AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Esta acción no se puede deshacer. Esto eliminará permanentemente el proyecto.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>
+                            Cancelar
+                        </AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDestroy(projectToDelete.id)}>
+                            Eliminar
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </AppLayout>
     );
 }
