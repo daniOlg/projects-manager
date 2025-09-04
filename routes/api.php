@@ -11,6 +11,6 @@ Route::prefix('v1')->group(function () {
         'message' => 'API is UP'
     ], 200));
 
-    // Project Routes
+    // Project routes
     Route::apiResource('projects', ProjectController::class);
 });
