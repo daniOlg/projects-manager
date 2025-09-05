@@ -8,13 +8,14 @@ Sistema web para la gestión de proyectos y usuarios, desarrollado con Laravel 1
 - **Frontend:** Vite + Tailwind CSS
 - **Autenticación:** JWT
 - **Testing:** PHPUnit
+- **Documentación de API:** Scramble + Postman Collection
 
 ## Características
 - Gestión de proyectos (CRUD)
 - Autenticación JWT
 - Tests automatizados con PHPUnit
 - Autenticación y protección de rutas con JWT
-- API RESTful documentada (Postman collection incluida)
+- API RESTful documentada (Scramble + Postman collection incluida)
 
 ## Requisitos
 - PHP >= 8.1
@@ -61,7 +62,8 @@ Sistema web para la gestión de proyectos y usuarios, desarrollado con Laravel 1
 ## Uso
 - Accede a la interfaz web en: `http://localhost:8000`
 - API disponible en: `http://localhost:8000/api/v1`
-- Documentación de endpoints: consulta `projects-manager.postman_collection.json`
+- Documentación de la API: `http://localhost:8000/docs/api`
+- Colección para Postman: `projects-manager.postman_collection.json`
 
 ## Por hacer
 
