@@ -4,6 +4,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 
+// API Root
+Route::get('/', fn() => response()->json([
+    'message' => 'Welcome to the Projects Manager API',
+    'docs' => url('/docs/api'),
+    'v1' => url('/api/v1'),
+]));
 
 // API Routes
 Route::prefix('v1')->group(function () {
