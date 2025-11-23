@@ -12,7 +12,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::with('creator')->get();
 
         if ($projects->isEmpty()) {
             return response()->json([
