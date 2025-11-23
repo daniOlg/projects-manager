@@ -33,7 +33,7 @@ Route::prefix('v1')->group(function () {
 
 function getAllRoutes()
 {
-    return collect(\Illuminate\Support\Facades\Route::getRoutes())->filter(function ($route) {
+    return collect(Route::getRoutes())->filter(function ($route) {
         return str_starts_with($route->uri(), 'api/');
     })->map(function ($route) {
         $fullUrl = url($route->uri());
