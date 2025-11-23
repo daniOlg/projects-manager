@@ -38,27 +38,31 @@ Sistema web para la gestión de proyectos y usuarios, desarrollado con Laravel 1
    ```bash
    npm install
    ```
-4. Copia el archivo de entorno y configura tus variables:
+4. Hacer build del frontend para generar recursos css/js:
+   ```bash
+   npm run build
+   ```
+5. Copia el archivo de entorno y configura tus variables:
    ```bash
    cp .env.example .env
    ```
-5. Genera la clave de la aplicación:
+6. Genera la clave de la aplicación:
    ```bash
    php artisan key:generate
    ```
-6. Genera la clave JWT:
+7. Genera la clave JWT:
    ```bash
    php artisan jwt:secret
    ```
-7. Ejecuta las migraciones:
+8. Ejecuta las migraciones:
    ```bash
    php artisan migrate
    ```
-8. Ejecuta los seeders (opcional, para datos de ejemplo):
+9. Ejecuta los seeders (opcional, para datos de ejemplo):
    ```bash
    php artisan db:seed
    ```
-9. Inicia el servidor:
+10. Inicia el servidor:
    ```bash
    php artisan serve
    ```
