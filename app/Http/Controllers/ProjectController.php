@@ -88,7 +88,6 @@ class ProjectController extends Controller
             'status' => 'sometimes|string|max:50',
             'responsible' => 'sometimes|string|max:100',
             'amount' => 'sometimes|numeric',
-            'created_by' => 'sometimes|integer',
         ]);
 
         $project->fill($validated);
