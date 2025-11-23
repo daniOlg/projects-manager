@@ -46,15 +46,19 @@ Sistema web para la gestión de proyectos y usuarios, desarrollado con Laravel 1
    ```bash
    php artisan key:generate
    ```
-6. Ejecuta las migraciones:
+6. Genera la clave JWT:
+   ```bash
+   php artisan jwt:secret
+   ```
+7. Ejecuta las migraciones:
    ```bash
    php artisan migrate
    ```
-7. Ejecuta los seeders (opcional, para datos de ejemplo):
+8. Ejecuta los seeders (opcional, para datos de ejemplo):
    ```bash
    php artisan db:seed
    ```
-8. Inicia el servidor:
+9. Inicia el servidor:
    ```bash
    php artisan serve
    ```
