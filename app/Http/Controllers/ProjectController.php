@@ -92,6 +92,7 @@ class ProjectController extends Controller
 
         $project->fill($validated);
         $project->save();
+        $project->load('creator');
 
         return response()->json([
             'message' => 'Project updated successfully',
