@@ -56,7 +56,7 @@ class ProjectController extends Controller
      */
     public function show(String $id)
     {
-        $project = Project::find($id);
+        $project = Project::with('creator')->find($id);
 
         if (!$project) {
             return response()->json([
