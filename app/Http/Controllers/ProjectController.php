@@ -40,7 +40,11 @@ class ProjectController extends Controller
             'amount' => 'required|numeric',
         ]);
 
-        $project = Project::create($validated);
+        $project = Project::create([
+            ...$validated,
+            'created_by' => auth()->id(),
+        ]);
+
         return response()->json([
             'message' => 'Project created successfully',
             'data' => $project
