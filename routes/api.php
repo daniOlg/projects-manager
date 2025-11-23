@@ -19,7 +19,7 @@ Route::prefix('v1')->group(function () {
     // Status
     Route::get('status', fn() => response()->json([
         'message' => 'API is UP'
-    ], 200));
+    ]));
 
     // Auth routes
     Route::post('auth/register', [AuthController::class, 'register']);
