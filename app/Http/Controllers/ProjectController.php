@@ -38,7 +38,6 @@ class ProjectController extends Controller
             'status' => 'required|string|max:50',
             'responsible' => 'required|string|max:100',
             'amount' => 'required|numeric',
-            'created_by' => 'required|integer',
         ]);
 
         $project = Project::create($validated);
