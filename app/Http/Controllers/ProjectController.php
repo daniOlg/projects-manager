@@ -36,14 +36,14 @@ class ProjectController extends Controller
     {
         $validated = $request->validated();
 
-        $project = Project::create([
-            ...$validated,
-            'created_by' => auth()->id(),
-        ]);
+        $project = new Project();
+        $project->fill($validated);
+        $project->created_by = auth()->id();
+        $project->save();
 
         return response()->json([
             'message' => 'Project created successfully',
-            'data' => $project
+            'data' => $project->load('creator')
         ], 201);
     }
 
@@ -82,11 +82,10 @@ class ProjectController extends Controller
 
         $project->fill($validated);
         $project->save();
-        $project->load('creator');
 
         return response()->json([
             'message' => 'Project updated successfully',
-            'data' => $project
+            'data' => $project->load('creator')
         ]);
     }
 
