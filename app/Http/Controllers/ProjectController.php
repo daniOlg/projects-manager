@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProjectStoreRequest;
+use App\Http\Requests\ProjectUpdateRequest;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
@@ -69,7 +70,7 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(ProjectUpdateRequest $request, $id)
     {
         $project = Project::find($id);
 
@@ -77,13 +78,7 @@ class ProjectController extends Controller
             return response()->json(['message' => 'Project not found', 'data' => null], 404);
         }
 
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'start_date' => 'sometimes|date',
-            'status' => 'sometimes|string|max:50',
-            'responsible' => 'sometimes|string|max:100',
-            'amount' => 'sometimes|numeric',
-        ]);
+        $validated = $request->validated();
 
         $project->fill($validated);
         $project->save();
